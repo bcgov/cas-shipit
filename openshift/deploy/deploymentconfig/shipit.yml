@@ -97,3 +97,5 @@ objects:
           serviceAccount: cas-shipit
           serviceAccountName: cas-shipit
           terminationGracePeriodSeconds: 30
+      triggers:
+        - type: ConfigChange
