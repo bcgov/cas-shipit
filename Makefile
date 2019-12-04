@@ -45,3 +45,10 @@ install: whoami
 	$(eval OC_TEMPLATE_VARS += POSTGRES_PASSWORD="$(POSTGRES_PASSWORD)")
 	$(call oc_deploy)
 	$(call oc_wait_for_deploy_ready,$(PROJECT_PREFIX)shipit)
+
+.PHONY: provision
+provision: whoami
+	$(call oc_new_project,$(OC_TOOLS_PROJECT))
+	$(call oc_new_project,$(OC_TEST_PROJECT))
+	$(call oc_new_project,$(OC_DEV_PROJECT))
+	$(call oc_new_project,$(OC_PROD_PROJECT))
