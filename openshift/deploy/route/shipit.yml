@@ -19,7 +19,7 @@ objects:
     spec:
       host: ${PREFIX}shipit.pathfinder.gov.bc.ca
       port:
-        targetPort: ${PREFIX}shipit
+        targetPort: ${PREFIX}shipit-web
       tls:
         termination: edge
         insecureEdgeTerminationPolicy: Redirect
