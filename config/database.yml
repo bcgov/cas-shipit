@@ -17,5 +17,7 @@ test:
   database: cas_shipit_test
 
 production:
-  url:  <%= ENV['DATABASE_URL'] %>
+  adapter: postgresql
+  encoding: unicode
+  url: <%= ENV['DATABASE_URL'] %>
   pool: <%= ENV['DB_POOL'] || 5 %>
