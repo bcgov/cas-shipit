@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cas-shipit
+description: A Helm chart for cas-shipit
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+  - name: cas-postgres
+    version: "0.6.0"
+    repository: https://bcgov.github.io/cas-postgres/
