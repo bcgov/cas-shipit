@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}
+  labels:
+{{ include "cas-shipit.labels" . | indent 4 }}
+spec:
+  ports:
+    - name: {{ include "cas-shipit.fullname" . }}
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+{{ include "cas-shipit.selectorLabels" . | indent 4 }}
+    role: web

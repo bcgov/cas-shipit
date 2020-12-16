@@ -1,0 +1,15 @@
+kind: NetworkSecurityPolicy
+apiVersion: security.devops.gov.bc.ca/v1alpha1
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}
+  labels:
+    created-by: {{ .Release.Name }}
+spec:
+  description: allow everything within this release to communicate
+  source:
+    - - $namespace={{ .Release.Namespace }}
+      - release={{ .Release.Name }}
+
+  destination:
+    - - $namespace={{ .Release.Namespace }}
+      - release={{ .Release.Name }}

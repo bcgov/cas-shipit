@@ -50,13 +50,62 @@ app.kubernetes.io/name: {{ include "cas-shipit.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "cas-shipit.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "cas-shipit.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- define "cas-shipit.host" -}}
+{{ include "cas-shipit.fullname" . }}.{{ .Values.route.clusterHost }}
 {{- end }}
+
+{{/*
+Environment variables required by the shipit container
+*/}}
+{{- define "cas-shipit.envVariables" -}}
+- name: SECRET_KEY_BASE
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: secret_key_base
+- name: SHIPIT_HOST
+  value: {{ include "cas-shipit.host" . }}
+- name: REDIS_URL
+  value: TODO
+- name: GITHUB_APP_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: github_app_id
+- name: GITHUB_INSTALLATION_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: github_installation_id
+- name: GITHUB_PRIVATE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: github_private_key
+- name: GITHUB_OAUTH_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: github_oauth_id
+- name: GITHUB_OAUTH_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: github_oauth_secret
+- name: GITHUB_OAUTH_TEAM
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}
+      key: github_oauth_team
+- name: PGHOST
+  value: {{ include "cas-shipit.fullname" . }}-patroni
+- name: PGUSER
+  value: postgres
+- name: PGDATABASE
+  value: postgres
+- name: PGPASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}-patroni
+      key: password-superuser
 {{- end }}

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}-web
+  labels:
+{{ include "cas-shipit.labels" . | indent 4 }}
+    role: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: {{ include "cas-shipit.fullname" . }}-web
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: {{ include "cas-shipit.fullname" . }}-web
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: {{ include "cas-shipit.fullname" . }}-web
+          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /status/version
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /status/version
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 600
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 30
+          resources:
+            limits:
+              cpu: 10m
+              memory: 1Gi
+            requests:
+              cpu: 1m
+              memory: 512Mi
+      restartPolicy: Always
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      terminationGracePeriodSeconds: 30

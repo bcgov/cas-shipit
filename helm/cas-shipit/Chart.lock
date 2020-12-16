@@ -1,0 +1,9 @@
+dependencies:
+- name: cas-postgres
+  repository: https://bcgov.github.io/cas-postgres/
+  version: 0.6.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.2.2
+digest: sha256:7ad094511eb88da0564944c03327dc5a6eb129966f0fcbf5f45e4109ce3346ea
+generated: "2020-12-16T10:53:26.823608848-08:00"
