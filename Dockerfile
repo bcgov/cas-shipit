@@ -4,7 +4,8 @@ ENV RAILS_ENV="production"
 COPY . /app
 WORKDIR /app
 RUN apt-get update &&  apt-get install libpq-dev
-RUN bundle config set deployment 'true' && \
+RUN gem install bundler:2.2.1 && \
+    bundle config set deployment 'true' && \
     bundle config set without 'development test'
 RUN bundle install && \
     bundle exec rake assets:precompile
@@ -15,8 +16,13 @@ COPY --from=builder /app/ /app/
 RUN useradd -r -u 1001 -g root nonroot
 RUN chown -R nonroot:0 /app && \
     chmod -R g=u /app
+RUN gem install bundler:2.2.1 && \
+    bundle config set deployment 'true' && \
+    bundle config set without 'development test'
 USER nonroot
+
 WORKDIR /app
+ENV HOME="/app"
 EXPOSE 3000
 ENV RAILS_ENV="production"
 CMD ["bin/rails", "server"]
