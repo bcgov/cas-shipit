@@ -65,8 +65,13 @@ Environment variables required by the shipit container
       key: secret_key_base
 - name: SHIPIT_HOST
   value: {{ include "cas-shipit.host" . }}
-- name: REDIS_URL
-  value: TODO
+- name: REDIS_HOST
+  value: {{ include "cas-shipit.fullname" . }}-redis-master
+- name: REDIS_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cas-shipit.fullname" . }}-redis
+      key: redis-password
 - name: GITHUB_APP_ID
   valueFrom:
     secretKeyRef:

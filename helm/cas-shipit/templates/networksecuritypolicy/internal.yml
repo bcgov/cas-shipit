@@ -8,7 +8,11 @@ spec:
   source:
     - - $namespace={{ .Release.Namespace }}
       - app.kubernetes.io/name={{ include "cas-shipit.name" . }}
+    - - $namespace={{ .Release.Namespace }}
+      - release={{ include "cas-shipit.name" . }}
 
   destination:
     - - $namespace={{ .Release.Namespace }}
       - app.kubernetes.io/name={{ include "cas-shipit.name" . }}
+    - - $namespace={{ .Release.Namespace }}
+      - release={{ include "cas-shipit.name" . }}
