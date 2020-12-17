@@ -4,18 +4,20 @@ metadata:
   name: {{ include "cas-shipit.fullname" . }}-web
   labels:
 {{ include "cas-shipit.labels" . | indent 4 }}
-    role: worker
+    role: web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: {{ include "cas-shipit.fullname" . }}-web
+      {{ include "cas-shipit.selectorLabels" . | nindent 6 }}
+      role: web
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        name: {{ include "cas-shipit.fullname" . }}-web
+      {{ include "cas-shipit.labels" . | nindent 8 }}
+        role: web
     spec:
       restartPolicy: Always
       containers:
@@ -48,10 +50,10 @@ spec:
             timeoutSeconds: 30
           resources:
             limits:
-              cpu: 10m
+              cpu: 1
               memory: 1Gi
             requests:
-              cpu: 1m
+              cpu: 500m
               memory: 512Mi
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}
