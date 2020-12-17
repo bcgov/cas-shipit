@@ -24,7 +24,7 @@ RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - && \
     apt-get clean
 
 RUN curl -L https://downloads-openshift-console.apps.silver.devops.gov.bc.ca/amd64/linux/oc.tar | tar x -C /bin --strip-components 1
-RUN curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 --output /opt/jq && \
+RUN curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 --output /bin/jq && \
     chmod +x /bin/jq
 RUN curl -L https://get.helm.sh/helm-v3.4.2-linux-amd64.tar.gz | tar xz -C /bin --strip-components 1
 
