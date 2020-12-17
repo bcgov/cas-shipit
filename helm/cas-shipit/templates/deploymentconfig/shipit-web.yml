@@ -26,13 +26,13 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
               protocol: TCP
           readinessProbe:
             failureThreshold: 3
             httpGet:
               path: /status/version
-              port: 8080
+              port: 3000
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -42,7 +42,7 @@ spec:
             failureThreshold: 3
             httpGet:
               path: /status/version
-              port: 8080
+              port: 3000
               scheme: HTTP
             initialDelaySeconds: 600
             periodSeconds: 10
