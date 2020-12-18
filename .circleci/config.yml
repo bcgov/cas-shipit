@@ -82,6 +82,9 @@ jobs:
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
+      - run:
+          name: Install yarn dependencies
+          command: yarn install --check-files
       - save_cache:
           name: Save Bundler Package Cache
           key: cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
