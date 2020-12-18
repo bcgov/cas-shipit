@@ -11,7 +11,7 @@ whoami: $(call make_help,whoami,Prints the name of the user currently authentica
 lint: $(call make_help,lint,Checks the configured yml template definitions against the remote schema using the tools namespace)
 lint: OC_PROJECT=$(OC_TOOLS_PROJECT)
 lint: whoami
-	$(call oc_lint)
+	@helm template cas-shipit helm/cas-shipit -f secret-values.example.yml --validate
 
 .PHONY: install
 install: whoami
