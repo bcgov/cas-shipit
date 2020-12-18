@@ -169,9 +169,9 @@ jobs:
             git submodule update --init
       - redhat-openshift/login-and-update-kubeconfig:
           insecure-skip-tls-verify: true
-          openshift-platform-version: 3.x
-          server-address: $OC_SERVER_ADDRESS
-          token: $OC_TOKEN
+          openshift-platform-version: 4.x
+          server-address: $OC_SILVER_SERVER_ADDRESS
+          token: $OC_SILVER_TOKEN
       - run:
           name: install helm
           command: |
@@ -179,7 +179,7 @@ jobs:
             chmod 700 get_helm.sh
             ./get_helm.sh
       - run:
-          command: make lint
+          command: ENVIRONMENT=$OC_SILVER_LINTER_NAMESPACE make lint
           name: Lint the openshift yaml
 
 workflows:
