@@ -5,10 +5,6 @@ metadata:
   labels:
 {{ include "cas-shipit.labels" . | indent 4 }}
     app.kubernetes.io/component: worker
-  annotations:
-    # The redis secret will change for every deployment, 
-    # so pods need to be recreated every time
-    rollme: {{ randAlphaNum 5 | quote }}
 spec:
   replicas: 1
   selector:
