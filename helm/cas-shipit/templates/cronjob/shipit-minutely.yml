@@ -2,6 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ include "cas-shipit.fullname" . }}-minutely
+  labels: {{ include "cas-shipit.labels" . | nindent 4 }}
 spec:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
@@ -10,6 +11,8 @@ spec:
       activeDeadlineSeconds: 120
       backoffLimit: 0
       template:
+        metadata:
+          labels: {{ include "cas-shipit.labels" . | nindent 12 }}
         spec:
           containers:
             - args:
