@@ -197,8 +197,8 @@ workflows:
       - verify:
           requires:
             - bundle
-      - oc_lint:
-          context: cas-pipeline
-          requires:
-            - test
-            - verify
+      # - oc_lint:
+      #     context: cas-pipeline
+      #     requires:
+      #       - test
+      #       - verify
