@@ -11,4 +11,4 @@ spec:
   destination:
     - - $namespace={{ .Release.Namespace }}
       - app.kubernetes.io/name={{ include "cas-shipit.name" . }}
-      - role=web
+      - app.kubernetes.io/component=web

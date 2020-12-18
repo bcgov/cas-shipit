@@ -4,18 +4,22 @@ metadata:
   name: {{ include "cas-shipit.fullname" . }}-worker
   labels:
 {{ include "cas-shipit.labels" . | indent 4 }}
-    role: worker
+    app.kubernetes.io/component: worker
+  annotations:
+    # The redis secret will change for every deployment, 
+    # so pods need to be recreated every time
+    rollme: {{ randAlphaNum 5 | quote }}
 spec:
   replicas: 1
   selector:
     matchLabels: {{ include "cas-shipit.selectorLabels" . | nindent 6 }}
-      role: worker
+      app.kubernetes.io/component: worker
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels: {{ include "cas-shipit.labels" . | nindent 8 }}
-        role: worker
+        app.kubernetes.io/component: worker
     spec:
       volumes:
         - name: {{ include "cas-shipit.fullname" . }}-worker-data

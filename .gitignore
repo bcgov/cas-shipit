@@ -23,9 +23,8 @@
 /public/assets
 .byebug_history
 
-# Ignore master key for decrypting credentials and more.
-/config/master.key
-.values.yml
+# Ignore values file to be used on install
+secret-values.yml
 
 /public/packs
 /public/packs-test
