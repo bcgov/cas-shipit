@@ -20,7 +20,7 @@ RUN chown -R nonroot:0 /app && \
     chmod -R g=u /app
 RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - && \
     apt-get update && \
-    apt-get install -y libpq-dev nodejs git && \
+    apt-get install -y libpq-dev nodejs git make && \
     apt-get clean
 
 RUN curl -L https://downloads-openshift-console.apps.silver.devops.gov.bc.ca/amd64/linux/oc.tar | tar x -C /bin --strip-components 1
