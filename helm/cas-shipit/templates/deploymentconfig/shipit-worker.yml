@@ -8,14 +8,14 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      name: {{ include "cas-shipit.fullname" . }}-worker
+    matchLabels: {{ include "cas-shipit.selectorLabels" . | nindent 6 }}
+      role: worker
   strategy:
     type: RollingUpdate
   template:
     metadata:
-      labels:
-        name: {{ include "cas-shipit.fullname" . }}-worker
+      labels: {{ include "cas-shipit.labels" . | nindent 8 }}
+        role: worker
     spec:
       volumes:
         - name: {{ include "cas-shipit.fullname" . }}-worker-data

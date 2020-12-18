@@ -63,6 +63,10 @@ Environment variables required by the shipit container
     secretKeyRef:
       name: {{ include "cas-shipit.fullname" . }}
       key: secret_key_base
+- name: RAILS_LOG_TO_STDOUT
+  value: "true"
+- name: RAILS_SERVE_STATIC_FILES
+  value: "true"
 - name: SHIPIT_HOST
   value: {{ include "cas-shipit.host" . }}
 - name: REDIS_HOST

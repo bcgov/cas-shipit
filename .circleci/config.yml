@@ -35,7 +35,7 @@ jobs:
           name: Log in to DockerHub
           command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USER --password-stdin registry.hub.docker.com
       - run:
-          name: Build tools Docker image
+          name: Build container with Docker
           command: >-
             docker build --cache-from=<< parameters.image_name >>
             -t << parameters.image_name >>:latest
@@ -76,6 +76,9 @@ jobs:
           keys:
             - cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
             - cas-shipit-bundle-v2-
+      - run: 
+          name: Install required version of bundler
+          command: gem install bundler:2.2.1
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install

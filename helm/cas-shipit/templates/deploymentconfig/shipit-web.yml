@@ -20,6 +20,17 @@ spec:
         role: web
     spec:
       restartPolicy: Always
+      initContainers:
+        - name: {{ include "cas-shipit.fullname" . }}-migrate
+          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["bin/rails", "db:migrate"]
+        - name: {{ include "cas-shipit.fullname" . }}-teams-fetch
+          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["bin/rake", "teams:fetch"]
       containers:
         - name: {{ include "cas-shipit.fullname" . }}-web
           env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
