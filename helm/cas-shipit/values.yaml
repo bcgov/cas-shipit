@@ -7,19 +7,22 @@ image:
   tag: "latest"
 
 serviceAccount:
-  name: deployer
+  name: cas-provision-deployer
 
 route:
   clusterHost: apps.silver.devops.gov.bc.ca
 
 gitHub: # https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md#updating-the-configsecretsyml
-  appId:
-  installationId: 
-  privateKey: 
+  appId: "123"
+  installationId: "456"
+  privateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    private key here
+    -----END RSA PRIVATE KEY-----
   oauth:
-    id:
-    secret:
-    team:
+    id: 123qwe
+    secret: 42abc
+    team: bcgov/some-team
 
 cas-postgres:
   patroni:
