@@ -24,7 +24,7 @@
 .byebug_history
 
 # Ignore values file to be used on install
-secret-values.yml
+secret-values.yaml
 
 /public/packs
 /public/packs-test
