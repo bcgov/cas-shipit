@@ -117,19 +117,19 @@ Environment variables required by the shipit container
     secretKeyRef:
       name: {{ include "cas-shipit.fullname" . }}-patroni
       key: password-superuser
-- name: AIRFLOW_NAMESPACE
+- name: AIRFLOW_NAMESPACE_PREFIX
   valueFrom:
     secretKeyRef:
-      name: cas-namespaces
-      key: airflow-namespace
-- name: GGIRCS_NAMESPACE
+      name: cas-namespace-prefixes
+      key: airflow-namespace-prefix
+- name: GGIRCS_NAMESPACE_PREFIX
   valueFrom:
     secretKeyRef:
-      name: cas-namespaces
-      key: ggircs-namespace
-- name: CIIP_NAMESPACE
+      name: cas-namespace-prefixes
+      key: ggircs-namespace-prefix
+- name: CIIP_NAMESPACE_PREFIX
   valueFrom:
     secretKeyRef:
-      name: cas-namespaces
-      key: ciip-namespace
+      name: cas-namespace-prefixes
+      key: ciip-namespace-prefix
 {{- end }}
