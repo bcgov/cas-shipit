@@ -2,11 +2,70 @@ version: 2.1
 
 orbs:
   redhat-openshift: circleci/redhat-openshift@0.2.0
+  gcp-gcr: circleci/gcp-gcr@0.7.1
 
 jobs:
+  build_image:
+    executor: gcp-gcr/default
+    parameters:
+      dockerfile:
+        type: string
+        default: Dockerfile
+      image_tag:
+        type: string
+      image_name:
+        type: string
+      cache_version:
+        type: integer
+        default: 1
+    steps:
+      - checkout
+      - gcp-gcr/gcr-auth
+      - restore_cache:
+          keys:
+            - v<< parameters.cache_version>>-<< parameters.image_name >>-{{ .Branch }}
+          paths:
+            - /tmp/<< parameters.image_name >>.tar
+      - run:
+          name: Load cache
+          command: |
+            set +o pipefail
+            docker load -i /tmp/<< parameters.image_name >>.tar | true
+      - run:
+          name: Log in to DockerHub
+          command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USER --password-stdin registry.hub.docker.com
+      - run:
+          name: Build container with Docker
+          command: >-
+            docker build --cache-from=<< parameters.image_name >>
+            -t << parameters.image_name >>:latest
+            -t gcr.io/${GOOGLE_PROJECT_ID}/<< parameters.image_name >>:latest
+            -t gcr.io/${GOOGLE_PROJECT_ID}/<< parameters.image_name >>:<< parameters.image_tag >>
+            -f << parameters.dockerfile >>
+            .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            docker save -o /tmp/<< parameters.image_name >>.tar << parameters.image_name >>:latest
+      - save_cache:
+          key: v<< parameters.cache_version>>-<< parameters.image_name >>-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /tmp/<< parameters.image_name >>.tar
+      - gcp-gcr/push-image:
+          image: << parameters.image_name >>
+          tag: << parameters.image_tag >>
+          digest-path: /tmp/digest.txt
+      - gcp-gcr/tag-image:
+          image: << parameters.image_name >>
+          source-tag: << parameters.image_tag >>
+          target-tag: latest
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+
   bundle:
     docker:
-      - image: circleci/ruby:2.5.3-node
+      - image: circleci/ruby:2.6.6-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -17,9 +76,15 @@ jobs:
           keys:
             - cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
             - cas-shipit-bundle-v2-
+      - run: 
+          name: Install required version of bundler
+          command: gem install bundler:2.2.1
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
+      - run:
+          name: Install yarn dependencies
+          command: yarn install --check-files
       - save_cache:
           name: Save Bundler Package Cache
           key: cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
@@ -32,7 +97,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:2.5.3-node
+      - image: circleci/ruby:2.6.6-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -46,6 +111,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - run: 
+          name: Install required version of bundler
+          command: gem install bundler:2.2.1
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -58,13 +126,16 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:2.5.3-node
+      - image: circleci/ruby:2.6.6-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
     steps:
       - attach_workspace:
           at: ~/
+      - run: 
+          name: Install required version of bundler
+          command: gem install bundler:2.2.1
       - run:
           name: Install the latest shipit-engine migrations
           command: ./bin/rake shipit:install:migrations
@@ -74,13 +145,16 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:2.5.3-node
+      - image: circleci/ruby:2.6.6-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
     steps:
       - attach_workspace:
           at: ~/
+      - run: 
+          name: Install required version of bundler
+          command: gem install bundler:2.2.1
       - run:
           name: Audit the bundle
           command: bundle audit check --update --ignore CVE-2015-9284
@@ -92,42 +166,30 @@ jobs:
       - run:
           name: "Pull Submodules"
           command: |
-            git submodule init
-            git submodule update --remote
+            git submodule update --init
       - redhat-openshift/login-and-update-kubeconfig:
           insecure-skip-tls-verify: true
-          openshift-platform-version: 3.x
-          server-address: $OC_SERVER_ADDRESS
-          token: $OC_TOKEN
+          openshift-platform-version: 4.x
+          server-address: $OC_SILVER_SERVER_ADDRESS
+          token: $OC_SILVER_TOKEN
       - run:
-          command: make lint
-          name: Lint the openshift yaml
-
-  oc_build:
-    executor: redhat-openshift/default
-    steps:
-      - checkout
-      - run:
-          name: "Pull Submodules"
+          name: install helm
           command: |
-            git submodule init
-            git submodule update --remote
-      - redhat-openshift/login-and-update-kubeconfig:
-          insecure-skip-tls-verify: true
-          openshift-platform-version: 3.x
-          server-address: $OC_SERVER_ADDRESS
-          token: $OC_TOKEN
+            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+            chmod 700 get_helm.sh
+            ./get_helm.sh
       - run:
-          command: make configure
-          name: Configure imagestream to point at the current SHA1
-      - run:
-          command: make build
-          name: Build image on the remote cluster
+          command: ENVIRONMENT=$OC_SILVER_LINTER_NAMESPACE make lint
+          name: Lint the openshift yaml
 
 workflows:
   version: 2
   test:
     jobs:
+      - build_image:
+          context: cas-pipeline
+          image_name: cas-shipit
+          image_tag: ${CIRCLE_SHA1}
       - bundle
       - test:
           requires:
@@ -135,17 +197,8 @@ workflows:
       - verify:
           requires:
             - bundle
-      - oc_lint:
-          context: cas-pipeline
-          requires:
-            - test
-            - verify
-      - oc_build:
-          requires:
-            - oc_lint
-          context: cas-pipeline
-          filters:
-            branches:
-              only:
-                - master
-                - develop
+      # - oc_lint:
+      #     context: cas-pipeline
+      #     requires:
+      #       - test
+      #       - verify

@@ -1,0 +1,14 @@
+kind: NetworkSecurityPolicy
+apiVersion: security.devops.gov.bc.ca/v1alpha1
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}-ingress
+  labels: {{ include "cas-shipit.labels" . | nindent 4 }}
+spec:
+  description: allow external networks to reach the web namespace
+  source:
+    - - ext:network=any
+
+  destination:
+    - - $namespace={{ .Release.Namespace }}
+      - app.kubernetes.io/name={{ include "cas-shipit.name" . }}
+      - app.kubernetes.io/component=web

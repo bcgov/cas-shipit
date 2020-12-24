@@ -17,5 +17,10 @@ test:
   database: cas_shipit_test
 
 production:
-  url:  <%= ENV['DATABASE_URL'] %>
+  <<: *default
+  host: <%= ENV['PGHOST'] %>
+  username: <%= ENV['PGUSER'] %>
+  password: <%= ENV['PGPASSWORD'] %>
+  database: <%= ENV['PGDATABASE'] %>
+  port: <%= ENV['PGPORT'] || 5432 %>
   pool: <%= ENV['DB_POOL'] || 5 %>

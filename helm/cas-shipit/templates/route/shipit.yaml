@@ -1,0 +1,26 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}
+  labels:
+{{ include "cas-shipit.labels" . | indent 4 }}
+spec:
+  host: {{ include "cas-shipit.host" . }}
+  port:
+    targetPort: {{ include "cas-shipit.fullname" . }}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  to:
+    kind: Service
+    name: {{ include "cas-shipit.fullname" . }}
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+    - conditions:
+        - status: "True"
+          type: Admitted
+      host: {{ include "cas-shipit.host" . }}
+      routerName: router
+      wildcardPolicy: None

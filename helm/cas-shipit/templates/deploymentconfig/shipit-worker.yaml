@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}-worker
+  labels:
+{{ include "cas-shipit.labels" . | indent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{ include "cas-shipit.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: {{ include "cas-shipit.labels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      volumes:
+        - name: {{ include "cas-shipit.fullname" . }}-worker-data
+          persistentVolumeClaim:
+            claimName: {{ include "cas-shipit.fullname" . }}-worker-data
+      restartPolicy: Always
+      containers:
+        - name: {{ include "cas-shipit.fullname" . }}-worker
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /usr/bin/env
+          args:
+            - bash
+            - "-c"
+            - bundle exec sidekiq -C config/sidekiq.yml
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /usr/bin/env
+                  - bash
+                  - "-c"
+                  - bundle exec sidekiqctl quiet
+          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1024Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          ports:
+            - containerPort: 7433
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 7433
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 7433
+              scheme: HTTP
+            initialDelaySeconds: 600
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 30
+          volumeMounts:
+            - mountPath: /opt/app-root/src/data
+              name: {{ include "cas-shipit.fullname" . }}-worker-data
+      restartPolicy: Always
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      terminationGracePeriodSeconds: 30

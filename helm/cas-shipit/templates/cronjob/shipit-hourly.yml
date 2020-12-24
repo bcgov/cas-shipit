@@ -1,0 +1,39 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}-hourly
+  labels: {{ include "cas-shipit.labels" . | nindent 4 }}
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 3600
+      backoffLimit: 0
+      template:
+        metadata:
+          labels: {{ include "cas-shipit.labels" . | nindent 12 }}
+        spec:
+          containers:
+            - args:
+                - bash
+                - -c
+                - bundle exec rake cron:hourly
+              command:
+                - /usr/bin/env
+              env: {{ include "cas-shipit.envVariables" . | nindent 16 }}
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              name: {{ include "cas-shipit.fullname" . }}-cron
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
+                requests:
+                  cpu: 250m
+                  memory: 128Mi
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+  schedule: 0 */1 * * *
+  successfulJobsHistoryLimit: 1
+  suspend: false

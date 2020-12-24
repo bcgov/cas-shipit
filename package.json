@@ -1,5 +1,12 @@
 {
   "name": "shipit",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "@rails/ujs": "^6.0.0-alpha",
+    "@rails/webpacker": "4.3.0"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.0"
+  }
 }
