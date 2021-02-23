@@ -1,0 +1,19 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}-internal-by-name
+  labels: {{ include "cas-shipit.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cas-shipit.name" . }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "cas-shipit.name" . }}
+        - podSelector:
+            matchLabels:
+              release: {{ include "cas-shipit.name" . }}
+  policyTypes:
+    - Ingress
