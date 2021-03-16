@@ -32,13 +32,9 @@ spec:
                 requests:
                   cpu: 500m
                   memory: 128Mi
-              terminationMessagePath: /dev/termination-log
-              terminationMessagePolicy: File
-          dnsPolicy: ClusterFirst
           restartPolicy: Never
-          schedulerName: default-scheduler
-          securityContext: {}
           terminationGracePeriodSeconds: 30
+          activeDeadlineSeconds: 120
   schedule: "*/5 * * * *"
   successfulJobsHistoryLimit: 1
   suspend: false

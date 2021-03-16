@@ -46,7 +46,7 @@ spec:
               cpu: "1"
               memory: 1024Mi
             requests:
-              cpu: 250m
+              cpu: 150m
               memory: 512Mi
           ports:
             - containerPort: 7433
