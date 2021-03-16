@@ -61,10 +61,10 @@ spec:
             timeoutSeconds: 30
           resources:
             limits:
-              cpu: 1
+              cpu: 700m
               memory: 1Gi
             requests:
-              cpu: 250m
+              cpu: 100m
               memory: 512Mi
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}
