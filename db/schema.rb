@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_11_214508) do
+ActiveRecord::Schema.define(version: 2021_03_16_220647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
     t.integer "deletions"
     t.integer "pull_request_number"
     t.string "pull_request_title", limit: 1024
-    t.integer "pull_request_id"
+    t.integer "merge_request_id"
     t.boolean "locked", default: false, null: false
     t.integer "lock_author_id"
     t.string "pull_request_head_sha", limit: 40
@@ -141,15 +141,7 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
-  create_table "output_chunks", id: :serial, force: :cascade do |t|
-    t.integer "task_id"
-    t.text "text"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["task_id"], name: "index_output_chunks_on_task_id"
-  end
-
-  create_table "pull_requests", id: :serial, force: :cascade do |t|
+  create_table "merge_requests", id: :serial, force: :cascade do |t|
     t.integer "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
@@ -171,11 +163,46 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
     t.datetime "merged_at"
     t.string "base_ref", limit: 1024
     t.integer "base_commit_id"
+    t.index ["head_id"], name: "index_merge_requests_on_head_id"
+    t.index ["merge_requested_by_id"], name: "index_merge_requests_on_merge_requested_by_id"
+    t.index ["merge_status"], name: "index_merge_requests_on_merge_status"
+    t.index ["stack_id", "github_id"], name: "index_merge_requests_on_stack_id_and_github_id", unique: true
+    t.index ["stack_id", "merge_status"], name: "index_merge_requests_on_stack_id_and_merge_status"
+    t.index ["stack_id", "number"], name: "index_merge_requests_on_stack_id_and_number", unique: true
+    t.index ["stack_id"], name: "index_merge_requests_on_stack_id"
+  end
+
+  create_table "output_chunks", id: :serial, force: :cascade do |t|
+    t.integer "task_id"
+    t.text "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["task_id"], name: "index_output_chunks_on_task_id"
+  end
+
+  create_table "pull_request_assignments", force: :cascade do |t|
+    t.bigint "pull_request_id"
+    t.bigint "user_id"
+    t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
+    t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
+  end
+
+  create_table "pull_requests", force: :cascade do |t|
+    t.bigint "stack_id", null: false
+    t.integer "number", null: false
+    t.string "title", limit: 256
+    t.bigint "github_id"
+    t.string "api_url", limit: 1024
+    t.string "state"
+    t.integer "additions", default: 0, null: false
+    t.integer "deletions", default: 0, null: false
+    t.integer "user_id"
+    t.text "labels"
+    t.bigint "head_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
-    t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
-    t.index ["merge_status"], name: "index_pull_requests_on_merge_status"
     t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
-    t.index ["stack_id", "merge_status"], name: "index_pull_requests_on_stack_id_and_merge_status"
     t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
     t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
   end
@@ -200,6 +227,9 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
     t.string "name", limit: 100, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "review_stacks_enabled", default: false
+    t.string "provisioning_behavior", default: "allow_all"
+    t.string "provisioning_label_name"
     t.index ["owner", "name"], name: "repository_unicity", unique: true
   end
 
@@ -224,9 +254,15 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
     t.datetime "last_deployed_at"
     t.bigint "repository_id", null: false
     t.datetime "archived_since"
+    t.string "provision_status", default: "deprovisioned", null: false
+    t.string "type", default: "Shipit::Stack"
+    t.boolean "awaiting_provision", default: false, null: false
     t.index ["archived_since"], name: "index_stacks_on_archived_since"
+    t.index ["awaiting_provision"], name: "index_stacks_on_awaiting_provision"
+    t.index ["provision_status"], name: "index_stacks_on_provision_status"
     t.index ["repository_id", "environment"], name: "stack_unicity", unique: true
     t.index ["repository_id"], name: "index_stacks_on_repository_id"
+    t.index ["type"], name: "index_stacks_on_type"
   end
 
   create_table "statuses", id: :serial, force: :cascade do |t|
@@ -265,6 +301,8 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
     t.boolean "ignored_safeties", default: false, null: false
     t.integer "aborted_by_id"
     t.integer "rollback_once_aborted_to_id"
+    t.integer "retry_attempt", default: 0, null: false
+    t.integer "max_retries"
     t.index ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
     t.index ["since_commit_id"], name: "index_tasks_on_since_commit_id"
     t.index ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"
@@ -308,8 +346,8 @@ ActiveRecord::Schema.define(version: 2020_12_11_214508) do
   add_foreign_key "commit_deployments", "tasks"
   add_foreign_key "memberships", "teams"
   add_foreign_key "memberships", "users"
-  add_foreign_key "pull_requests", "commits", column: "base_commit_id"
-  add_foreign_key "pull_requests", "commits", column: "head_id"
-  add_foreign_key "pull_requests", "stacks"
-  add_foreign_key "pull_requests", "users", column: "merge_requested_by_id"
+  add_foreign_key "merge_requests", "commits", column: "base_commit_id"
+  add_foreign_key "merge_requests", "commits", column: "head_id"
+  add_foreign_key "merge_requests", "stacks"
+  add_foreign_key "merge_requests", "users", column: "merge_requested_by_id"
 end
