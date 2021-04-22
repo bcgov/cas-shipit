@@ -65,7 +65,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/ruby:2.6.6-node
+      - image: circleci/ruby:2.6.7-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -97,7 +97,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:2.6.6-node
+      - image: circleci/ruby:2.6.7-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -126,7 +126,7 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:2.6.6-node
+      - image: circleci/ruby:2.6.7-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -145,7 +145,7 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:2.6.6-node
+      - image: circleci/ruby:2.6.7-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
