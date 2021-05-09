@@ -45,17 +45,26 @@ header.header, nav.nav {
 
 
 .btn {
- color: $color-primary;
- border: 2px solid $color-primary;
- box-shadow: none;
- background: none;
+  color: $color-primary;
+  border: 2px solid $color-primary;
+  box-shadow: none;
+  background: none;
 
- &:hover {
-   opacity: 0.80;
-   text-decoration: underline;
-   color: $bg-light;
-   background-color: $color-primary;
- }
+  &:hover {
+    opacity: 0.80;
+    text-decoration: underline;
+    color: $bg-light;
+    background-color: $color-primary;
+  }
+
+  &.btn--disabled, &.disabled {
+    opacity: 0.3;
+    border: none;
+    text-decoration: none;
+    cursor: not-allowed;
+    color: $color-primary;
+    background: none;
+  }
 }
 
 .stack-table-header li, .commits-path small {
