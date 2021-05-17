@@ -40,7 +40,7 @@
           <div class="banner__content">
             <h2 class="banner__title">GitHub is having issues</h2>
               <% if github_status[:body].present? %>
-                "<i><%= github_status[:body] %></i>"
+                "<em><%= github_status[:body] %></em>"
               <% end %>
               <% if github_status[:last_updated].present? %>
                 <%= time_ago_in_words(github_status[:last_updated]) %> ago
