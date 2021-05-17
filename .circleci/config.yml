@@ -108,6 +108,7 @@ jobs:
           POSTGRES_USER: cas-shipit
           POSTGRES_DB: cas_shipit_test
           POSTGRES_PASSWORD: ""
+      - image: circleci/redis:6.0.9-alpine
     steps:
       - attach_workspace:
           at: ~/
