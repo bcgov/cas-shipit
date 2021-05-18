@@ -8,7 +8,6 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 120
       backoffLimit: 0
       template:
         metadata:
@@ -34,7 +33,7 @@ spec:
                   memory: 128Mi
           restartPolicy: Never
           terminationGracePeriodSeconds: 30
-          activeDeadlineSeconds: 120
+          activeDeadlineSeconds: 300
   schedule: "*/5 * * * *"
   successfulJobsHistoryLimit: 1
   suspend: false
