@@ -3,5 +3,4 @@ dependencies:
 deploy:
   override:
     - git submodule --quiet update --init
-    - make install:
-        timeout: 600
+    - make install
