@@ -17,4 +17,4 @@ lint: whoami
 install: whoami
 	@helm dep up helm/cas-shipit
 	@helm upgrade --install cas-shipit helm/cas-shipit --atomic -n $(OC_PROJECT) \
-		--set image.tag=$(GIT_SHA1) --set image.pullPolicy=IfNotPresent
+		--set image.tag=$(GIT_SHA1) --set image.pullPolicy=IfNotPresent --timeout 300s
