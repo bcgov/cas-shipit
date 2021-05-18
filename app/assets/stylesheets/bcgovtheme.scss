@@ -80,6 +80,9 @@ header.header, nav.nav {
 
 .stack-lst li:nth-child(even) a {
   background-color: #f8f9fa !important;
+  &:hover {
+    background-color: $bg-nav !important;
+  }
 }
 
 a, .banner__text a {
