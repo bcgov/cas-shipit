@@ -78,6 +78,10 @@ header.header, nav.nav {
   }
 }
 
+.stack-lst li:nth-child(even) a {
+  background-color: #f8f9fa !important;
+}
+
 a, .banner__text a {
   color: $color-link;
   text-decoration: underline;
