@@ -31,7 +31,7 @@ RUN curl -L https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz | tar xz -C /bin 
 # bundler needs to be installed and configured as the nonroot user
 USER nonroot
 ENV HOME="/app"
-RUN gem install bundler:2.2.1 && \
+RUN gem install bundler:2.2.21 && \
     bundle config set deployment 'true' && \
     bundle config set without 'development test'
 
