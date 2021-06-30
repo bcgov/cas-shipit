@@ -4,18 +4,20 @@
 # README
 
 In this repository you'll find:
-  - A Rails application that uses Shopify's [shipit engine](https://github.com/Shopify/shipit-engine) to provide a continuous deployment application
-  - A Docker container for the rails application, built following the [Bitnami tutorial](https://docs.bitnami.com/tutorials/secure-optimize-rails-application-bitnami-ruby-production/)
-  - A Helm chart allowing you to deploy shipit in your OpenShift 4 namespace.
+
+- A Rails application that uses Shopify's [shipit engine](https://github.com/Shopify/shipit-engine) to provide a continuous deployment application
+- A Docker container for the rails application, built following the [Bitnami tutorial](https://docs.bitnami.com/tutorials/secure-optimize-rails-application-bitnami-ruby-production/)
+- A Helm chart allowing you to deploy shipit in your OpenShift 4 namespace.
 
 Prerequisites:
-  - Prior to deploying the helm chart, a "deployer" service account must be provisioned. See our [cas-pipeline](https://github.com/bcgov/cas-pipeline) repository for more information
-  - When first installing the helm chart, you need to provied a `secret-values.yaml` file containing your github app information. See [the shipit documentation](https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md#updating-the-configsecretsyml) for more information
 
+- Prior to deploying the helm chart, a "deployer" service account must be provisioned. See our [cas-pipeline](https://github.com/bcgov/cas-pipeline) repository for more information
+- When first installing the helm chart, you need to provied a `secret-values.yaml` file containing your github app information. See [the shipit documentation](https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md#updating-the-configsecretsyml) for more information
 
 ## Local development
 
 - install the development tools using asdf
+  - OSX users might have compilation issues with ruby and might need to disable a warning: `CFLAGS="-Wno-error=implicit-function-declaration" asdf install`
 - install ruby gems with `bundle install`
 - install npm packages with `yarn install`
 - start a postgres db with `pg_ctl start`
