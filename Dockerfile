@@ -1,4 +1,4 @@
-FROM bitnami/rails:6.1.3-1 as builder
+FROM bitnami/rails:6.1.4-0 as builder
 USER root
 ENV RAILS_ENV="production"
 COPY . /app
@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y libpq-dev && \
     apt-get clean
-RUN gem install bundler:2.2.1 && \
+RUN gem install bundler:2.2.21 && \
     bundle config set deployment 'true' && \
     bundle config set without 'development test'
 RUN bundle install && \
@@ -31,7 +31,7 @@ RUN curl -L https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz | tar xz -C /bin 
 # bundler needs to be installed and configured as the nonroot user
 USER nonroot
 ENV HOME="/app"
-RUN gem install bundler:2.2.1 && \
+RUN gem install bundler:2.2.21 && \
     bundle config set deployment 'true' && \
     bundle config set without 'development test'
 
