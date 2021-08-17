@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_220647) do
+ActiveRecord::Schema.define(version: 2021_08_17_204657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2021_03_16_220647) do
     t.string "html_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "github_updated_at"
     t.index ["commit_id"], name: "index_check_runs_on_commit_id"
     t.index ["github_id", "commit_id"], name: "index_check_runs_on_github_id_and_commit_id", unique: true
     t.index ["stack_id"], name: "index_check_runs_on_stack_id"
@@ -237,7 +238,7 @@ ActiveRecord::Schema.define(version: 2021_03_16_220647) do
     t.string "environment", limit: 50, default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "branch", limit: 255, default: "master", null: false
+    t.string "branch", limit: 255, null: false
     t.string "deploy_url", limit: 255
     t.string "lock_reason", limit: 4096
     t.integer "tasks_count", default: 0, null: false
