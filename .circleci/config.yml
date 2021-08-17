@@ -65,7 +65,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/ruby:2.6.7-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -78,7 +78,7 @@ jobs:
             - cas-shipit-bundle-v2-
       - run: 
           name: Install required version of bundler
-          command: gem install bundler:2.2.1
+          command: gem install bundler:2.2.26
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
@@ -97,7 +97,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:2.6.7-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -114,7 +114,7 @@ jobs:
           at: ~/
       - run: 
           name: Install required version of bundler
-          command: gem install bundler:2.2.1
+          command: gem install bundler:2.2.26
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -127,7 +127,7 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:2.6.7-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -136,7 +136,7 @@ jobs:
           at: ~/
       - run: 
           name: Install required version of bundler
-          command: gem install bundler:2.2.1
+          command: gem install bundler:2.2.26
       - run:
           name: Install the latest shipit-engine migrations
           command: ./bin/rake shipit:install:migrations
@@ -146,7 +146,7 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:2.6.7-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -155,7 +155,7 @@ jobs:
           at: ~/
       - run: 
           name: Install required version of bundler
-          command: gem install bundler:2.2.1
+          command: gem install bundler:2.2.26
       - run:
           name: Audit the bundle
           command: bundle audit check --update --ignore CVE-2015-9284
