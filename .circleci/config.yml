@@ -76,7 +76,7 @@ jobs:
           keys:
             - cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
             - cas-shipit-bundle-v2-
-      - run: 
+      - run:
           name: Install required version of bundler
           command: gem install bundler:2.2.26
       - run:
@@ -103,16 +103,17 @@ jobs:
           BUNDLE_FROZEN: true
           PGHOST: 127.0.0.1
           PGUSER: cas-shipit
-      - image: circleci/postgres:11.4
+      - image: circleci/postgres:13.4 # TODO: update to 14.0 when available (see https://circleci.com/docs/2.0/docker-image-tags.json)
         environment:
           POSTGRES_USER: cas-shipit
           POSTGRES_DB: cas_shipit_test
           POSTGRES_PASSWORD: ""
+          POSTGRES_HOST_AUTH_METHOD: trust
       - image: circleci/redis:6.0.9-alpine
     steps:
       - attach_workspace:
           at: ~/
-      - run: 
+      - run:
           name: Install required version of bundler
           command: gem install bundler:2.2.26
       - run:
@@ -134,7 +135,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: 
+      - run:
           name: Install required version of bundler
           command: gem install bundler:2.2.26
       - run:
@@ -153,7 +154,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: 
+      - run:
           name: Install required version of bundler
           command: gem install bundler:2.2.26
       - run:
@@ -202,7 +203,7 @@ workflows:
           requires:
             - bundle
       - audit:
-          requires: 
+          requires:
             - bundle
       # - oc_lint:
       #     context: cas-pipeline
