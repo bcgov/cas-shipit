@@ -3,14 +3,18 @@
   "private": true,
   "dependencies": {
     "@rails/ujs": "^6.1.4",
-    "@rails/webpacker": "^5.4.0"
+    "@rails/webpacker": "^5.4.3"
   },
   "version": "0.1.0",
   "devDependencies": {
+    "improved-yarn-audit": "^3.0.0",
     "webpack": "^4.46.0",
     "webpack-dev-server": "^3.11.2"
   },
   "resolutions": {
+    "**/ansi-regex": "^5.0.1",
+    "**/set-value": "^4.0.1",
+    "**/nth-check": "^2.0.1",
     "**/glob-parent": "^5.1.2"
   }
 }
