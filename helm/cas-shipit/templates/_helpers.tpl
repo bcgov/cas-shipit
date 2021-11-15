@@ -132,4 +132,9 @@ Environment variables required by the shipit container
     secretKeyRef:
       name: cas-namespace-prefixes
       key: ciip-namespace-prefix
+- name: CIF_NAMESPACE_PREFIX
+  valueFrom:
+    secretKeyRef:
+      name: cas-namespace-prefixes
+      key: cif-namespace-prefix
 {{- end }}
