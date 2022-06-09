@@ -6,8 +6,8 @@ version: 0.1.2
 appVersion: 0.1.0
 dependencies:
   - name: cas-postgres
-    version: "0.8.3"
+    version: ~0.8.3
     repository: https://bcgov.github.io/cas-postgres/
   - name: redis
-    version: 12.2.2
+    version: 16.x.x
     repository: https://charts.bitnami.com/bitnami

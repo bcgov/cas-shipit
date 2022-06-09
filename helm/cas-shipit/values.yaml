@@ -45,10 +45,16 @@ redis:
     imagePullSecrets:
       - dockerhub-registry
   storageClass: netapp-block-standard
-  securityContext:
-    enabled: false
-  containerSecurityContext:
-    enabled: false
+  master:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+  replicas:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
   # We are providing our own secret as the redis chart regenerates the password with every deploy
   existingSecret: cas-shipit-redis
   existingSecretPasswordKey: redis-password
