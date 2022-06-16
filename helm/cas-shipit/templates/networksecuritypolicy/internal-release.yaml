@@ -11,7 +11,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: {{ include "cas-shipit.name" . }}
+              app.kubernetes.io/instance: {{ include "cas-shipit.name" . }}
         - podSelector:
             matchLabels:
               release: {{ include "cas-shipit.name" . }}
