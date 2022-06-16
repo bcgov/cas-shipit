@@ -50,11 +50,26 @@ redis:
       enabled: false
     containerSecurityContext:
       enabled: false
-  replicas:
+    resources:
+      limits:
+        cpu: 50m
+        memory: 128Mi
+      requests:
+        cpu: 15m
+        memory: 64Mi
+  replica:
+    replicaCount: 1
     podSecurityContext:
       enabled: false
     containerSecurityContext:
       enabled: false
+    resources:
+      limits:
+        cpu: 50m
+        memory: 128Mi
+      requests:
+        cpu: 15m
+        memory: 64Mi
   auth:
     # We are providing our own secret as the redis chart regenerates the password with every deploy
     existingSecret: cas-shipit-redis

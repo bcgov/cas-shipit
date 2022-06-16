@@ -43,7 +43,7 @@ spec:
           env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
           resources:
             limits:
-              cpu: "1"
+              cpu: 300m
               memory: 1024Mi
             requests:
               cpu: 150m
