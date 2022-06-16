@@ -15,6 +15,8 @@ lint: whoami
 
 .PHONY: install
 install: whoami
-	@helm dep up helm/cas-shipit
+	@helm repo add cas-postgres https://bcgov.github.io/cas-postgres/
+	@helm repo add bitnami https://charts.bitnami.com/bitnami
+	@helm dep build helm/cas-shipit
 	@helm upgrade --install cas-shipit helm/cas-shipit -n $(OC_PROJECT) \
 		--set image.tag=$(GIT_SHA1) --set image.pullPolicy=IfNotPresent
