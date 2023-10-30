@@ -3,7 +3,7 @@ USER root
 ENV RAILS_ENV="production"
 COPY . /app
 WORKDIR /app
-# RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "ruby" "3.2.2"
+RUN . component_unpack "ruby" "3.2.2"
 RUN apt-get update && \
     apt-get install -y libpq-dev && \
     apt-get clean
