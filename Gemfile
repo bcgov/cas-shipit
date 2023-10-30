@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.2'
+ruby '3.2.0'
 
-gem 'rails', '~> 7.0.8'
+gem 'rails', '>= 7.0.0'
 # Use postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server

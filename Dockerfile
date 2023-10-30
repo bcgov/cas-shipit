@@ -12,7 +12,7 @@ RUN bundle install && \
     bundle exec rake assets:precompile
 
 # second stage
-FROM bitnami/ruby:3.2.2 as prod
+FROM bitnami/ruby:3.2.0 as prod
 COPY --from=builder /app/ /app/
 RUN useradd -r -u 1001 -g root nonroot
 RUN chown -R nonroot:0 /app && \
