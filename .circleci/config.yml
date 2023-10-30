@@ -65,7 +65,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -97,7 +97,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -128,7 +128,7 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -147,7 +147,7 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
