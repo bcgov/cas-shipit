@@ -65,7 +65,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: circleci/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -78,7 +78,7 @@ jobs:
             - cas-shipit-bundle-v2-
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.4.10
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
@@ -97,7 +97,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: circleci/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -128,7 +128,7 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: circleci/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -147,7 +147,7 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: circleci/ruby:3.2.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
