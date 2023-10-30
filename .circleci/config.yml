@@ -74,8 +74,8 @@ jobs:
       - restore_cache:
           name: Restore Bundler Package Cache
           keys:
-            - cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
-            - cas-shipit-bundle-v2-
+            - cas-shipit-bundle-v3-{{ checksum "Gemfile.lock" }}
+            - cas-shipit-bundle-v3-
       - run:
           name: Install required version of bundler
           command: gem install bundler:2.4.10
@@ -87,7 +87,7 @@ jobs:
           command: yarn install --check-files
       - save_cache:
           name: Save Bundler Package Cache
-          key: cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
+          key: cas-shipit-bundle-v3-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
       - persist_to_workspace:
