@@ -103,7 +103,7 @@ jobs:
           BUNDLE_FROZEN: true
           PGHOST: 127.0.0.1
           PGUSER: cas-shipit
-      - image: circleci/postgres:14.0 # TODO: update to 14.0 when available (see https://circleci.com/docs/2.0/docker-image-tags.json)
+      - image: circleci/postgres:13.4 # TODO: update to 14.0 when available (see https://circleci.com/docs/2.0/docker-image-tags.json)
         environment:
           POSTGRES_USER: cas-shipit
           POSTGRES_DB: cas_shipit_test
