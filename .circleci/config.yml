@@ -65,7 +65,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/ruby:3.2.2-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -97,13 +97,13 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:3.2.2-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
           PGHOST: 127.0.0.1
           PGUSER: cas-shipit
-      - image: circleci/postgres:13.4 # TODO: update to 14.0 when available (see https://circleci.com/docs/2.0/docker-image-tags.json)
+      - image: circleci/postgres:14.0 # TODO: update to 14.0 when available (see https://circleci.com/docs/2.0/docker-image-tags.json)
         environment:
           POSTGRES_USER: cas-shipit
           POSTGRES_DB: cas_shipit_test
@@ -128,7 +128,7 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:3.2.2-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -137,7 +137,7 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.4.10
       - run:
           name: Install the latest shipit-engine migrations
           command: ./bin/rake shipit:install:migrations
@@ -147,7 +147,7 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:3.2.2-node
+      - image: circleci/ruby:3.0.2-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -156,7 +156,7 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.4.10
       - run:
           name: Audit the bundle
           command: gem install bundler-audit && bundle-audit check
