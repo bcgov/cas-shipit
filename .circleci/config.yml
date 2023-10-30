@@ -32,6 +32,9 @@ jobs:
             set +o pipefail
             docker load -i /tmp/<< parameters.image_name >>.tar | true
       - run:
+          name: Install required version of bundler
+          command: gem install bundler:2.4.10
+      - run:
           name: Log in to DockerHub
           command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USER --password-stdin registry.hub.docker.com
       - run:
@@ -115,7 +118,7 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.4.10
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m

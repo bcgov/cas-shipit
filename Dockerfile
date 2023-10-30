@@ -1,4 +1,4 @@
-FROM bitnami/rails:6.1.4-0 as builder
+FROM bitnami/rails:7 as builder
 USER root
 ENV RAILS_ENV="production"
 COPY . /app
@@ -12,7 +12,7 @@ RUN bundle install && \
     bundle exec rake assets:precompile
 
 # second stage
-FROM bitnami/ruby:3.0.2-prod as prod
+FROM bitnami/ruby:3.2.0 as prod
 COPY --from=builder /app/ /app/
 RUN useradd -r -u 1001 -g root nonroot
 RUN chown -R nonroot:0 /app && \
