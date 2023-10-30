@@ -1,4 +1,4 @@
-FROM bitnami/rails:7 as builder
+FROM bitnami/rails:7.0.8 as builder
 USER root
 ENV RAILS_ENV="production"
 COPY . /app

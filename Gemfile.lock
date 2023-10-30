@@ -431,7 +431,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.6)
   pg
   puma (~> 4.3.12)
-  rails (~> 7.0.0)
+  rails (~> 7.0.8)
   redis-rails
   sass-rails (~> 5)
   selenium-webdriver
