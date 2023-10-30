@@ -1,9 +1,8 @@
-FROM bitnami/rails:7.0.8 as builder
+FROM bitnami/rails:7.1.1 as builder
 USER root
 ENV RAILS_ENV="production"
 COPY . /app
 WORKDIR /app
-RUN . component_unpack "ruby" "3.2.2"
 RUN apt-get update && \
     apt-get install -y libpq-dev && \
     apt-get clean
