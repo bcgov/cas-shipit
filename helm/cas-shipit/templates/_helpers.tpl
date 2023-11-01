@@ -137,4 +137,14 @@ Environment variables required by the shipit container
     secretKeyRef:
       name: cas-namespace-prefixes
       key: cif-namespace-prefix
+- name: OBPS_NAMESPACE_PREFIX
+  valueFrom:
+    secretKeyRef:
+      name: cas-namespace-prefixes
+      key: obps-namespace-prefix
+- name: WAREHOUSE_NAMESPACE_PREFIX
+  valueFrom:
+    secretKeyRef:
+      name: cas-namespace-prefixes
+      key: warehouse-namespace-prefix
 {{- end }}
