@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.2'
 
-gem 'rails', '~> 6.1', '>= 6.1.4.1'
+gem 'rails', '~> 7.0.8', '>= 7.0.0'
 # Use postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -50,6 +50,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'sidekiq'
 gem 'sidekiq_alive'
-gem 'shipit-engine', '~> 0.34.0'
+gem 'shipit-engine', '~> 0.38.0'
 gem 'redis-rails'
 gem 'webrick'
