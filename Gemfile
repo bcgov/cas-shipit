@@ -48,7 +48,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'sidekiq'
+gem 'sidekiq', '~> 6.5.10'
 gem 'sidekiq_alive'
 gem 'shipit-engine', '~> 0.34.0'
 gem 'redis-rails'
