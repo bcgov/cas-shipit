@@ -34,3 +34,4 @@ When updating to a new version of shipit-engine, it is possible that the shipit 
 rake shipit:install:migrations
 rake db:migrate
 ```
+test addition
