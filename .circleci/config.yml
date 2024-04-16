@@ -168,10 +168,6 @@ jobs:
     executor: redhat-openshift/default
     steps:
       - checkout
-      - run:
-          name: "Pull Submodules"
-          command: |
-            git submodule update --init
       - redhat-openshift/login-and-update-kubeconfig:
           insecure-skip-tls-verify: true
           openshift-platform-version: 4.x
