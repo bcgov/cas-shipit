@@ -78,7 +78,7 @@ jobs:
             - cas-shipit-bundle-v2-
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
