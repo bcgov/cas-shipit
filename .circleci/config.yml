@@ -82,9 +82,6 @@ jobs:
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
-      - run:
-          name: Install yarn dependencies
-          command: yarn install --check-files
       - save_cache:
           name: Save Bundler Package Cache
           key: cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
@@ -115,7 +112,7 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -137,7 +134,7 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Install the latest shipit-engine migrations
           command: ./bin/rake shipit:install:migrations
@@ -156,13 +153,10 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Audit the bundle
           command: gem install bundler-audit && bundle-audit check
-      - run:
-          name: Audit the yarn dependencies
-          command: yarn run improved-yarn-audit
 
   oc_lint:
     executor: redhat-openshift/default
