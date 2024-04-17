@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
-include .pipeline/oc.mk
+
 
 .PHONY: whoami
 whoami: $(call make_help,whoami,Prints the name of the user currently authenticated via `oc`)
