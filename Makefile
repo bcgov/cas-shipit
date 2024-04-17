@@ -2,6 +2,8 @@ SHELL := /usr/bin/env bash
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
+# Borrowed from cas-pipeline
+OC_PROJECT=$(shell echo "$${ENVIRONMENT:-$${OC_PROJECT}}")
 
 .PHONY: whoami
 whoami: $(call make_help,whoami,Prints the name of the user currently authenticated via `oc`)
