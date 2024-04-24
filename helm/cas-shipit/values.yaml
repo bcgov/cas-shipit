@@ -1,5 +1,6 @@
-
 replicaCount: 1
+
+fullnameOverride: cas-shipit-pierre
 
 image:
   repository: gcr.io/ggl-cas-storage/cas-shipit
