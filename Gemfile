@@ -60,7 +60,9 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
 gem "sidekiq"
+gem 'sidekiq_alive'
 gem "shipit-engine"
 
 gem "pg"

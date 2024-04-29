@@ -156,6 +156,7 @@ GEM
     gemoji (2.1.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    gserver (0.0.1)
     hashie (5.0.0)
     i18n (1.14.4)
       concurrent-ruby (~> 1.0)
@@ -362,6 +363,9 @@ GEM
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
       redis-client (>= 0.19.0)
+    sidekiq_alive (2.4.0)
+      gserver (~> 0.0.1)
+      sidekiq (>= 5, < 8)
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
@@ -442,6 +446,7 @@ DEPENDENCIES
   selenium-webdriver
   shipit-engine
   sidekiq
+  sidekiq_alive
   sprockets-rails
   sqlite3 (~> 1.4)
   stimulus-rails
