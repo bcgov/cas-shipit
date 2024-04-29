@@ -50,9 +50,18 @@ COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER rails:rails
+# Not suitable for openshift
+# RUN useradd rails --create-home --shell /bin/bash && \
+#     chown -R rails:rails db log storage tmp 
+# USER rails:rails
+
+RUN useradd -r -u 1001 -g root nonroot
+RUN chown -R nonroot:0 /rails && \
+    chmod -R g=u /rails
+RUN chown -R nonroot:0 /usr/local/bundle && \
+    chmod -R g=u /usr/local/bundle
+
+USER nonroot
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]

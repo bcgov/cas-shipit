@@ -21,6 +21,18 @@ spec:
     spec:
       restartPolicy: Always
       initContainers:
+        - name: {{ include "cas-shipit.fullname" . }}-migrate
+          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["bin/rails", "db:migrate"]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
         - name: {{ include "cas-shipit.fullname" . }}-teams-fetch
           env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
