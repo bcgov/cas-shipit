@@ -1,7 +1,5 @@
 replicaCount: 1
 
-fullnameOverride: cas-shipit-pierre
-
 image:
   repository: gcr.io/ggl-cas-storage/cas-shipit
   pullPolicy: Always
@@ -36,7 +34,7 @@ cas-postgres:
         memory: 250Mi
     persistentVolume:
       storageClass: netapp-block-standard
-      size: 4Gi
+      size: 2Gi
     replicaCount: 3
     env:
       ALLOW_NOSSL: true
@@ -47,6 +45,8 @@ redis:
       - dockerhub-registry
   storageClass: netapp-block-standard
   master:
+    persistence:
++     size: 1Gi
     podSecurityContext:
       enabled: false
     containerSecurityContext:
@@ -59,6 +59,8 @@ redis:
         cpu: 15m
         memory: 64Mi
   replica:
+    persistence:
++     size: 1Gi
     replicaCount: 1
     podSecurityContext:
       enabled: false
