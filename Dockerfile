@@ -27,6 +27,9 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
+# Create a revision file for shipit
+RUN bundle info shipit-engine --version > REVISION
+
 # Copy application code
 COPY . .
 
