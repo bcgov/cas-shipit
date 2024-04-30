@@ -23,6 +23,10 @@ gitHub: # https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md#upd
     secret: 42abc
     team: bcgov/some-team
 
+shipit:
+  web:
+    puma_workers: 4
+
 cas-postgres:
   patroni:
     resources:

@@ -47,7 +47,10 @@ spec:
               memory: 256Gi
       containers:
         - name: {{ include "cas-shipit.fullname" . }}-web
-          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+          env: 
+            {{ include "cas-shipit.envVariables" . | indent 12 }}
+            - name: WEB_CONCURRENCY
+              value: {{ .Values.shipit.web.puma_workers }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
