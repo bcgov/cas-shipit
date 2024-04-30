@@ -45,15 +45,19 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 nodejs libpq-dev && \
+    apt-get install --no-install-recommends -y curl libsqlite3-0 nodejs libpq-dev jq git make && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+RUN curl -L https://downloads-openshift-console.apps.silver.devops.gov.bc.ca/amd64/linux/oc.tar | tar x -C /bin
+RUN curl -L https://get.helm.sh/helm-v3.14.4-linux-amd64.tar.gz | tar xz -C /bin --strip-components 1
+
 
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-# Not suitable for openshift
+# Default shipit setup not suitable for openshift
 # RUN useradd rails --create-home --shell /bin/bash && \
 #     chown -R rails:rails db log storage tmp 
 # USER rails:rails
