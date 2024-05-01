@@ -70,6 +70,9 @@ RUN chown -R nonroot:0 /usr/local/bundle && \
 
 USER nonroot
 
+# Helm needs to write a few directories in the HOME of the user
+ENV HOME="/rails"
+
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
