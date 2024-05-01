@@ -11,19 +11,22 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
-  create_table "api_clients", force: :cascade do |t|
-    t.text "permissions", limit: 65535
-    t.integer "creator_id", limit: 4
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "api_clients", id: :serial, force: :cascade do |t|
+    t.text "permissions"
+    t.integer "creator_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "name", limit: 255, default: ""
-    t.integer "stack_id", limit: 4
+    t.integer "stack_id"
     t.index ["creator_id"], name: "index_api_clients_on_creator_id"
   end
 
   create_table "check_runs", force: :cascade do |t|
-    t.integer "stack_id", null: false
-    t.integer "commit_id", null: false
+    t.bigint "stack_id", null: false
+    t.bigint "commit_id", null: false
     t.bigint "github_id", null: false
     t.string "name", null: false
     t.string "conclusion", limit: 20
@@ -38,7 +41,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["stack_id"], name: "index_check_runs_on_stack_id"
   end
 
-  create_table "commit_deployment_statuses", force: :cascade do |t|
+  create_table "commit_deployment_statuses", id: :serial, force: :cascade do |t|
     t.integer "commit_deployment_id"
     t.string "status"
     t.bigint "github_id"
@@ -48,7 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["commit_deployment_id"], name: "index_commit_deployment_statuses_on_commit_deployment_id"
   end
 
-  create_table "commit_deployments", force: :cascade do |t|
+  create_table "commit_deployments", id: :serial, force: :cascade do |t|
     t.integer "commit_id"
     t.integer "task_id"
     t.integer "github_id"
@@ -60,24 +63,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["task_id"], name: "index_commit_deployments_on_task_id"
   end
 
-  create_table "commits", force: :cascade do |t|
-    t.integer "stack_id", limit: 4, null: false
-    t.integer "author_id", limit: 4
-    t.integer "committer_id", limit: 4
+  create_table "commits", id: :serial, force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.integer "author_id"
+    t.integer "committer_id"
     t.string "sha", limit: 40, null: false
-    t.text "message", limit: 65535, null: false
+    t.text "message", null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.boolean "detached", default: false, null: false
     t.datetime "authored_at", precision: nil, null: false
     t.datetime "committed_at", precision: nil, null: false
-    t.integer "additions", limit: 4
-    t.integer "deletions", limit: 4
+    t.integer "additions"
+    t.integer "deletions"
     t.integer "pull_request_number"
     t.string "pull_request_title", limit: 1024
     t.integer "merge_request_id"
     t.boolean "locked", default: false, null: false
-    t.integer "lock_author_id", limit: 4
+    t.integer "lock_author_id"
     t.string "pull_request_head_sha", limit: 40
     t.index ["author_id"], name: "index_commits_on_author_id"
     t.index ["committer_id"], name: "index_commits_on_committer_id"
@@ -86,16 +89,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["stack_id"], name: "index_commits_on_stack_id"
   end
 
-  create_table "deliveries", force: :cascade do |t|
-    t.integer "hook_id", limit: 4, null: false
-    t.string "status", limit: 50
+  create_table "deliveries", id: :serial, force: :cascade do |t|
+    t.integer "hook_id", null: false
+    t.string "status", limit: 50, default: "pending", null: false
     t.string "url", limit: 4096, null: false
     t.string "content_type", limit: 255, null: false
-    t.string "event", limit: 50
-    t.text "payload", limit: 16777215, null: false
-    t.integer "response_code", limit: 4
-    t.text "response_headers", limit: 65535
-    t.text "response_body", limit: 65535
+    t.string "event", limit: 50, null: false
+    t.text "payload", null: false
+    t.integer "response_code"
+    t.text "response_headers"
+    t.text "response_body"
     t.datetime "delivered_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -103,9 +106,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["hook_id", "status"], name: "index_deliveries_on_hook_id_and_status"
   end
 
-  create_table "github_hooks", force: :cascade do |t|
-    t.integer "stack_id", limit: 4
-    t.integer "github_id", limit: 4
+  create_table "github_hooks", id: :serial, force: :cascade do |t|
+    t.integer "stack_id"
+    t.integer "github_id"
     t.string "event", limit: 50, null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
@@ -117,8 +120,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["stack_id", "event"], name: "index_github_hooks_on_stack_id_and_event", unique: true
   end
 
-  create_table "hooks", force: :cascade do |t|
-    t.integer "stack_id", limit: 4
+  create_table "hooks", id: :serial, force: :cascade do |t|
+    t.integer "stack_id"
     t.string "delivery_url", limit: 4096, null: false
     t.string "content_type", limit: 4, default: "json", null: false
     t.string "secret", limit: 255
@@ -129,20 +132,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["stack_id"], name: "index_hooks_on_stack_id"
   end
 
-  create_table "memberships", force: :cascade do |t|
-    t.integer "team_id", limit: 4
-    t.integer "user_id", limit: 4
+  create_table "memberships", id: :serial, force: :cascade do |t|
+    t.integer "team_id"
+    t.integer "user_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["team_id", "user_id"], name: "index_memberships_on_team_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
-  create_table "merge_requests", force: :cascade do |t|
+  create_table "merge_requests", id: :serial, force: :cascade do |t|
     t.integer "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
-    t.integer "github_id", limit: 8
+    t.bigint "github_id"
     t.string "api_url", limit: 1024
     t.string "state"
     t.integer "head_id"
@@ -169,33 +172,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["stack_id"], name: "index_merge_requests_on_stack_id"
   end
 
-  create_table "output_chunks", force: :cascade do |t|
-    t.integer "task_id", limit: 4
-    t.text "text", limit: 16777215
+  create_table "output_chunks", id: :serial, force: :cascade do |t|
+    t.integer "task_id"
+    t.text "text"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["task_id"], name: "index_output_chunks_on_task_id"
   end
 
   create_table "pull_request_assignments", force: :cascade do |t|
-    t.integer "pull_request_id"
-    t.integer "user_id"
+    t.bigint "pull_request_id"
+    t.bigint "user_id"
     t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
     t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
   end
 
   create_table "pull_requests", force: :cascade do |t|
-    t.integer "stack_id", null: false
+    t.bigint "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
-    t.integer "github_id", limit: 8
+    t.bigint "github_id"
     t.string "api_url", limit: 1024
     t.string "state"
     t.integer "additions", default: 0, null: false
     t.integer "deletions", default: 0, null: false
     t.integer "user_id"
     t.text "labels"
-    t.integer "head_id"
+    t.bigint "head_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
@@ -205,9 +208,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
   end
 
   create_table "release_statuses", force: :cascade do |t|
-    t.integer "stack_id", null: false
-    t.integer "commit_id", null: false
-    t.integer "user_id"
+    t.bigint "stack_id", null: false
+    t.bigint "commit_id", null: false
+    t.bigint "user_id"
     t.string "state", limit: 10, null: false
     t.string "description", limit: 1024
     t.string "target_url", limit: 1024
@@ -230,18 +233,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["owner", "name"], name: "repository_unicity", unique: true
   end
 
-  create_table "stacks", force: :cascade do |t|
+  create_table "stacks", id: :serial, force: :cascade do |t|
     t.string "environment", limit: 50, default: "production", null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.string "branch", limit: 255, null: false
     t.string "deploy_url", limit: 255
     t.string "lock_reason", limit: 4096
-    t.integer "tasks_count", limit: 4, default: 0, null: false
+    t.integer "tasks_count", default: 0, null: false
     t.boolean "continuous_deployment", default: false, null: false
-    t.integer "undeployed_commits_count", limit: 4, default: 0, null: false
-    t.text "cached_deploy_spec", limit: 65535
-    t.integer "lock_author_id", limit: 4
+    t.integer "undeployed_commits_count", default: 0, null: false
+    t.text "cached_deploy_spec"
+    t.integer "lock_author_id"
     t.boolean "ignore_ci"
     t.datetime "inaccessible_since", precision: nil
     t.integer "estimated_deploy_duration", default: 1, null: false
@@ -249,7 +252,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.datetime "locked_since", precision: nil
     t.boolean "merge_queue_enabled", default: false, null: false
     t.datetime "last_deployed_at", precision: nil
-    t.integer "repository_id", null: false
+    t.bigint "repository_id", null: false
     t.datetime "archived_since", precision: nil
     t.string "provision_status", default: "deprovisioned", null: false
     t.string "type", default: "Shipit::Stack"
@@ -262,33 +265,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["type"], name: "index_stacks_on_type"
   end
 
-  create_table "statuses", force: :cascade do |t|
+  create_table "statuses", id: :serial, force: :cascade do |t|
     t.string "state", limit: 255
     t.string "target_url", limit: 255
-    t.text "description", limit: 65535
+    t.text "description"
     t.string "context", limit: 255, default: "default", null: false
-    t.integer "commit_id", limit: 4
+    t.integer "commit_id"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.integer "stack_id", null: false
     t.index ["commit_id"], name: "index_statuses_on_commit_id"
   end
 
-  create_table "tasks", force: :cascade do |t|
-    t.integer "stack_id", limit: 4, null: false
-    t.integer "since_commit_id", limit: 4
-    t.integer "until_commit_id", limit: 4
+  create_table "tasks", id: :serial, force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.integer "since_commit_id"
+    t.integer "until_commit_id"
     t.string "status", limit: 10, default: "pending", null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-    t.integer "user_id", limit: 4
+    t.integer "user_id"
     t.boolean "rolled_up", default: false, null: false
     t.string "type", limit: 20
-    t.integer "parent_id", limit: 4
-    t.integer "additions", limit: 4, default: 0
-    t.integer "deletions", limit: 4, default: 0
-    t.text "definition", limit: 65535
-    t.binary "gzip_output", limit: 16777215
+    t.integer "parent_id"
+    t.integer "additions", default: 0
+    t.integer "deletions", default: 0
+    t.text "definition"
+    t.binary "gzip_output"
     t.boolean "rollback_once_aborted", default: false, null: false
     t.text "env"
     t.integer "confirmations", default: 0, null: false
@@ -311,8 +314,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
-  create_table "teams", force: :cascade do |t|
-    t.integer "github_id", limit: 4
+  create_table "teams", id: :serial, force: :cascade do |t|
+    t.integer "github_id"
     t.string "api_url", limit: 255
     t.string "slug", limit: 255
     t.string "name", limit: 255
@@ -322,8 +325,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_181714) do
     t.index ["organization", "slug"], name: "index_teams_on_organization_and_slug", unique: true
   end
 
-  create_table "users", force: :cascade do |t|
-    t.integer "github_id", limit: 4
+  create_table "users", id: :serial, force: :cascade do |t|
+    t.integer "github_id"
     t.string "name", limit: 255, null: false
     t.string "email", limit: 255
     t.string "login", limit: 39
