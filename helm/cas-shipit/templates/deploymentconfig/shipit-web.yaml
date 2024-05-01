@@ -32,7 +32,7 @@ spec:
               memory: 1Gi
             requests:
               cpu: 250m
-              memory: 256Gi
+              memory: 256Mi
         - name: {{ include "cas-shipit.fullname" . }}-teams-fetch
           env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -44,13 +44,12 @@ spec:
               memory: 1Gi
             requests:
               cpu: 250m
-              memory: 256Gi
+              memory: 256Mi
       containers:
         - name: {{ include "cas-shipit.fullname" . }}-web
-          env: 
-            {{ include "cas-shipit.envVariables" . | indent 12 }}
+          env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
             - name: WEB_CONCURRENCY
-              value: {{ .Values.shipit.web.puma_workers }}
+              value: "{{ .Values.shipit.web.puma_workers }}"
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -82,7 +81,7 @@ spec:
               memory: 1Gi
             requests:
               cpu: 250m
-              memory: 256Gi
+              memory: 256Mi
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: 30

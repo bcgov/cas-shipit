@@ -50,7 +50,7 @@ redis:
   storageClass: netapp-block-standard
   master:
     persistence:
-+     size: 1Gi
+      size: 1Gi
     podSecurityContext:
       enabled: false
     containerSecurityContext:
@@ -64,7 +64,7 @@ redis:
         memory: 64Mi
   replica:
     persistence:
-+     size: 1Gi
+      size: 1Gi
     replicaCount: 1
     podSecurityContext:
       enabled: false
