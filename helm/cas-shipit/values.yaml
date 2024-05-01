@@ -38,7 +38,7 @@ cas-postgres:
         memory: 250Mi
     persistentVolume:
       storageClass: netapp-block-standard
-      size: 2Gi
+      size: 4Gi
     replicaCount: 3
     env:
       ALLOW_NOSSL: true
@@ -49,8 +49,6 @@ redis:
       - dockerhub-registry
   storageClass: netapp-block-standard
   master:
-    persistence:
-      size: 1Gi
     podSecurityContext:
       enabled: false
     containerSecurityContext:
@@ -63,8 +61,6 @@ redis:
         cpu: 15m
         memory: 64Mi
   replica:
-    persistence:
-      size: 1Gi
     replicaCount: 1
     podSecurityContext:
       enabled: false
