@@ -75,5 +75,5 @@ redis:
         memory: 64Mi
   auth:
     # We are providing our own secret as the redis chart regenerates the password with every deploy
-    existingSecret: cas-shipit-test-redis
+    existingSecret: cas-shipit-redis
     existingSecretPasswordKey: redis-password
