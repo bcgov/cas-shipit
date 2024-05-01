@@ -65,7 +65,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.3.0-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -78,13 +78,10 @@ jobs:
             - cas-shipit-bundle-v2-
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Bundle install dependencies
           command: bundle check || bundle install
-      - run:
-          name: Install yarn dependencies
-          command: yarn install --check-files
       - save_cache:
           name: Save Bundler Package Cache
           key: cas-shipit-bundle-v2-{{ checksum "Gemfile.lock" }}
@@ -97,25 +94,25 @@ jobs:
 
   test:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.3.0-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
           PGHOST: 127.0.0.1
           PGUSER: cas-shipit
-      - image: circleci/postgres:13.4 # TODO: update to 14.0 when available (see https://circleci.com/docs/2.0/docker-image-tags.json)
+      - image: cimg/postgres:14.11
         environment:
           POSTGRES_USER: cas-shipit
           POSTGRES_DB: cas_shipit_test
           POSTGRES_PASSWORD: ""
           POSTGRES_HOST_AUTH_METHOD: trust
-      - image: circleci/redis:6.0.9-alpine
+      - image: cimg/redis:7.2
     steps:
       - attach_workspace:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -128,7 +125,7 @@ jobs:
 
   verify:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.3.0-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -137,7 +134,7 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Install the latest shipit-engine migrations
           command: ./bin/rake shipit:install:migrations
@@ -147,7 +144,7 @@ jobs:
 
   audit:
     docker:
-      - image: circleci/ruby:3.0.2-node
+      - image: cimg/ruby:3.3.0-node
         environment:
           BUNDLE_PATH: vendor/bundle
           BUNDLE_FROZEN: true
@@ -156,22 +153,15 @@ jobs:
           at: ~/
       - run:
           name: Install required version of bundler
-          command: gem install bundler:2.2.26
+          command: gem install bundler:2.5.7
       - run:
           name: Audit the bundle
           command: gem install bundler-audit && bundle-audit check
-      - run:
-          name: Audit the yarn dependencies
-          command: yarn run improved-yarn-audit
 
   oc_lint:
     executor: redhat-openshift/default
     steps:
       - checkout
-      - run:
-          name: "Pull Submodules"
-          command: |
-            git submodule update --init
       - redhat-openshift/login-and-update-kubeconfig:
           insecure-skip-tls-verify: true
           openshift-platform-version: 4.x

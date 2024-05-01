@@ -1,7 +1,16 @@
 SHELL := /usr/bin/env bash
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
-include .pipeline/oc.mk
+
+# Borrowed from cas-pipeline to remove a dependency
+OC_PROJECT=$(shell echo "$${ENVIRONMENT:-$${OC_PROJECT}}")
+GIT=$(shell command -v git)
+ifeq ($(GIT),)
+$(error 'git' not found in $$PATH)
+endif
+GIT_SHA1=$(shell $(GIT) rev-parse HEAD)
+
+
 
 .PHONY: whoami
 whoami: $(call make_help,whoami,Prints the name of the user currently authenticated via `oc`)

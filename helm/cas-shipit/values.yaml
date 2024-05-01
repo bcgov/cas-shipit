@@ -1,4 +1,3 @@
-
 replicaCount: 1
 
 image:
@@ -24,15 +23,19 @@ gitHub: # https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md#upd
     secret: 42abc
     team: bcgov/some-team
 
+shipit:
+  web:
+    puma_workers: 4
+
 cas-postgres:
   patroni:
     resources:
       limits:
-        cpu: 50m
+        cpu: 250m
         memory: 500Mi
       requests:
-        cpu: 15m
-        memory: 250Mi
+        cpu: 20m
+        memory: 400Mi
     persistentVolume:
       storageClass: netapp-block-standard
       size: 4Gi
@@ -52,10 +55,10 @@ redis:
       enabled: false
     resources:
       limits:
-        cpu: 50m
+        cpu: 250m
         memory: 128Mi
       requests:
-        cpu: 15m
+        cpu: 30m
         memory: 64Mi
   replica:
     replicaCount: 1
@@ -65,10 +68,10 @@ redis:
       enabled: false
     resources:
       limits:
-        cpu: 50m
+        cpu: 250m
         memory: 128Mi
       requests:
-        cpu: 15m
+        cpu: 30m
         memory: 64Mi
   auth:
     # We are providing our own secret as the redis chart regenerates the password with every deploy

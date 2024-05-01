@@ -1,41 +1,78 @@
-FROM bitnami/rails:6.1.4-0 as builder
-USER root
-ENV RAILS_ENV="production"
-COPY . /app
-WORKDIR /app
-RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "ruby" "3.0.2-1"
-RUN apt-get update && \
-    apt-get install -y libpq-dev && \
-    apt-get clean
-RUN bundle config set deployment 'true' && \
-    bundle config set without 'development test'
-RUN bundle install && \
-    bundle exec rake assets:precompile
+# syntax = docker/dockerfile:1
 
-# second stage    
-FROM bitnami/ruby:3.0.2-prod as prod
-COPY --from=builder /app/ /app/
-RUN useradd -r -u 1001 -g root nonroot
-RUN chown -R nonroot:0 /app && \
-    chmod -R g=u /app
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - && \
-    apt-get update && \
-    apt-get install -y libpq-dev nodejs git make && \
-    apt-get clean
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+ARG RUBY_VERSION=3.3.0
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+
+# Rails app lives here
+WORKDIR /rails
+
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
+
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential git pkg-config nodejs libpq-dev
+
+# Install application gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
+
+# Create a revision file for shipit
+RUN bundle info shipit-engine --version > REVISION
+
+# Copy application code
+COPY . .
+
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
+
+# Final stage for app image
+FROM base
+
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libsqlite3-0 nodejs libpq-dev jq git make && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 RUN curl -L https://downloads-openshift-console.apps.silver.devops.gov.bc.ca/amd64/linux/oc.tar | tar x -C /bin
-RUN curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 --output /bin/jq && \
-    chmod +x /bin/jq
-RUN curl -L https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz | tar xz -C /bin --strip-components 1
+RUN curl -L https://get.helm.sh/helm-v3.14.4-linux-amd64.tar.gz | tar xz -C /bin --strip-components 1
 
-# bundler needs to be installed and configured as the nonroot user
+
+# Copy built artifacts: gems, application
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+# Default shipit setup not suitable for openshift
+# RUN useradd rails --create-home --shell /bin/bash && \
+#     chown -R rails:rails db log storage tmp 
+# USER rails:rails
+
+RUN useradd -r -u 1001 -g root nonroot
+RUN chown -R nonroot:0 /rails && \
+    chmod -R g=u /rails
+RUN chown -R nonroot:0 /usr/local/bundle && \
+    chmod -R g=u /usr/local/bundle
+
 USER nonroot
-ENV HOME="/app"
-RUN gem install bundler && \
-    bundle config set deployment 'true' && \
-    bundle config set without 'development test'
 
-WORKDIR /app
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-ENV RAILS_ENV="production"
-CMD ["bin/rails", "server"]
+CMD ["./bin/rails", "server"]

@@ -28,11 +28,11 @@ spec:
           args: ["bin/rails", "db:migrate"]
           resources:
             limits:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 500m
+              memory: 1Gi
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 250m
+              memory: 256Mi
         - name: {{ include "cas-shipit.fullname" . }}-teams-fetch
           env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -40,14 +40,16 @@ spec:
           args: ["bin/rake", "teams:fetch"]
           resources:
             limits:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 500m
+              memory: 1Gi
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 250m
+              memory: 256Mi
       containers:
         - name: {{ include "cas-shipit.fullname" . }}-web
           env: {{ include "cas-shipit.envVariables" . | nindent 12 }}
+            - name: WEB_CONCURRENCY
+              value: "{{ .Values.shipit.web.puma_workers }}"
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -75,11 +77,11 @@ spec:
             timeoutSeconds: 30
           resources:
             limits:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 500m
+              memory: 1Gi
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 250m
+              memory: 256Mi
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: 30
