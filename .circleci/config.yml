@@ -5,64 +5,6 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.7.1
 
 jobs:
-  build_image:
-    executor: gcp-gcr/default
-    parameters:
-      dockerfile:
-        type: string
-        default: Dockerfile
-      image_tag:
-        type: string
-      image_name:
-        type: string
-      cache_version:
-        type: integer
-        default: 1
-    steps:
-      - checkout
-      - gcp-gcr/gcr-auth
-      - restore_cache:
-          keys:
-            - v<< parameters.cache_version>>-<< parameters.image_name >>-{{ .Branch }}
-          paths:
-            - /tmp/<< parameters.image_name >>.tar
-      - run:
-          name: Load cache
-          command: |
-            set +o pipefail
-            docker load -i /tmp/<< parameters.image_name >>.tar | true
-      - run:
-          name: Log in to DockerHub
-          command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USER --password-stdin registry.hub.docker.com
-      - run:
-          name: Build container with Docker
-          command: >-
-            docker build --cache-from=<< parameters.image_name >>
-            -t << parameters.image_name >>:latest
-            -t gcr.io/${GOOGLE_PROJECT_ID}/<< parameters.image_name >>:latest
-            -t gcr.io/${GOOGLE_PROJECT_ID}/<< parameters.image_name >>:<< parameters.image_tag >>
-            -f << parameters.dockerfile >>
-            .
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            docker save -o /tmp/<< parameters.image_name >>.tar << parameters.image_name >>:latest
-      - save_cache:
-          key: v<< parameters.cache_version>>-<< parameters.image_name >>-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /tmp/<< parameters.image_name >>.tar
-      - gcp-gcr/push-image:
-          image: << parameters.image_name >>
-          tag: << parameters.image_tag >>
-          digest-path: /tmp/digest.txt
-      - gcp-gcr/tag-image:
-          image: << parameters.image_name >>
-          source-tag: << parameters.image_tag >>
-          target-tag: latest
-      - run:
-          command: |
-            echo "Digest is: $(</tmp/digest.txt)"
-
   bundle:
     docker:
       - image: cimg/ruby:3.3.0-node
@@ -181,10 +123,6 @@ workflows:
   version: 2
   test:
     jobs:
-      - build_image:
-          context: cas-pipeline
-          image_name: cas-shipit
-          image_tag: ${CIRCLE_SHA1}
       - bundle
       - test:
           requires:
