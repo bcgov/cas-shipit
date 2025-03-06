@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/ggl-cas-storage/cas-shipit
+  repository: ghcr.io/bcgov/cas-shipit
   pullPolicy: Always
   tag: "latest"
 

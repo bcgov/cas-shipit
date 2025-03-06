@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   redhat-openshift: circleci/redhat-openshift@0.2.0
-  gcp-gcr: circleci/gcp-gcr@0.7.1
 
 jobs:
   bundle:
