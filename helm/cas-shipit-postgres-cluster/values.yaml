@@ -8,7 +8,7 @@ postgresCluster:
   postgres:
     replicaCount: 3
   pgbouncer:
-    replicaCount: 2
+    replicaCount: 1
   resources:
     requests:
       cpu: 100m
@@ -21,10 +21,10 @@ postgresCluster:
       password:
         type: AlphaNumeric
       databases:
-        - cas_shipit
+        - postgres
     - name: shipit
       databases:
-        - cas_shipit
+        - postgres
       password:
         type: AlphaNumeric
 
