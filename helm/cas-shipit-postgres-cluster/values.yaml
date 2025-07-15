@@ -1,0 +1,42 @@
+# Values file to be passed to a deployment of https://github.com/bcgov/cas-postgres/tree/develop/helm/cas-postgres-cluster
+
+# dev, test, prod
+environment: prod
+
+postgresCluster:
+  postgresVersion: 17
+  postgres:
+    replicaCount: 3
+  pgbouncer:
+    replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+  # The "users" value(s) is passed to the crunch postgres operator to create the database.
+  # See http://access.crunchydata.com/documentation/postgres-operator/latest/tutorials/basic-setup/user-management
+  users:
+    - name: postgres
+      password:
+        type: AlphaNumeric
+      databases:
+        - cas_shipit
+    - name: shipit
+      databases:
+        - cas_shipit
+      password:
+        type: AlphaNumeric
+
+gcsBackups:
+  enable: true
+  # Needs to match the "namespace_apps" value in the terraform provisioning chart.
+  # example syntax: bucketName
+  bucketName: shipit-pgo-bkup
+
+terraform-bucket-provision:
+  terraform:
+    # example syntax: '["bucketName"]'
+    namespace_apps: '["shipit-pgo-bkup"]'
+    # !important: unique for the deployment
+    workspace: shipit-pgo
