@@ -22,8 +22,20 @@ lint: whoami
 	@helm dep up helm/cas-shipit
 	@helm template cas-shipit helm/cas-shipit -f secret-values.example.yaml --validate -n $(OC_PROJECT)
 
+.PHONY: install_pgo_cluster
+install_pgo_cluster:
+	@set -euo pipefail;
+	helm repo add cas-postgres https://bcgov.github.io/cas-postgres/;
+	helm repo update;
+
+	helm upgrade --install --atomic --timeout 3000s \
+		--namespace $(OC_PROJECT) \
+		--values ./helm/cas-shipit-postgres-values.yaml \
+		cas-shipit-db cas-postgres/cas-postgres;
+
+# TODO: Remove cas-postgres and add PG-Cluster deployment
 .PHONY: install
-install: whoami
+install: whoami install_pgo_cluster
 	@helm repo add cas-postgres https://bcgov.github.io/cas-postgres/
 	@helm repo add bitnami https://charts.bitnami.com/bitnami
 	@helm dep build helm/cas-shipit
