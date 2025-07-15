@@ -107,16 +107,29 @@ Environment variables required by the shipit container
       name: {{ include "cas-shipit.fullname" . }}
       key: github_oauth_team
 - name: PGHOST
-  value: {{ include "cas-shipit.fullname" . }}-patroni
-- name: PGUSER
-  value: postgres
-- name: PGDATABASE
-  value: postgres
-- name: PGPASSWORD
+  value: null
   valueFrom:
     secretKeyRef:
-      name: {{ include "cas-shipit.fullname" . }}-patroni
-      key: password-superuser
+      key: pgbouncer-host
+      name: {{ .Values.database.releaseName }}-{{ .Values.database.chartName }}-pguser-{{ .Values.database.user}}
+- name: PGUSER
+  value: null
+  valueFrom:
+    secretKeyRef:
+      key: user
+      name: {{ .Values.database.releaseName }}-{{ .Values.database.chartName }}-pguser-{{ .Values.database.user}}
+- name: PGDATABASE
+  value: null
+  valueFrom:
+    secretKeyRef:
+      key: dbname
+      name: {{ .Values.database.releaseName }}-{{ .Values.database.chartName }}-pguser-{{ .Values.database.user}}
+- name: PGPASSWORD
+  value: null
+  valueFrom:
+    secretKeyRef:
+      key: password
+      name: {{ .Values.database.releaseName }}-{{ .Values.database.chartName }}-pguser-{{ .Values.database.user}}
 - name: AIRFLOW_NAMESPACE_PREFIX
   valueFrom:
     secretKeyRef:

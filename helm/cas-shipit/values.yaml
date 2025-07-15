@@ -27,6 +27,11 @@ shipit:
   web:
     puma_workers: 4
 
+databaseCluster:
+  releaseName: cas-shipit-db
+  chartName: cas-postgres-cluster
+  user: shipit
+
 # TODO: Remove this once PGO is deployed
 cas-postgres:
   patroni:
