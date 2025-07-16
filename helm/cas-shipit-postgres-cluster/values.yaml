@@ -32,11 +32,11 @@ gcsBackups:
   enable: true
   # Needs to match the "namespace_apps" value in the terraform provisioning chart.
   # example syntax: bucketName
-  bucketName: shipit-pgo-bkup
+  bucketName: shipit-pg-bup
 
 terraform-bucket-provision:
   terraform:
     # example syntax: '["bucketName"]'
-    namespace_apps: '["shipit-pgo-bkup"]'
+    namespace_apps: '["shipit-pg-bup"]'
     # !important: unique for the deployment
     workspace: shipit-pgo
