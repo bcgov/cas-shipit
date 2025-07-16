@@ -2,7 +2,7 @@ apiVersion: v2
 name: cas-shipit
 description: A Helm chart for cas-shipit
 type: application
-version: 0.1.3
+version: 0.1.4
 appVersion: 0.39.0
 dependencies:
   - name: cas-postgres
