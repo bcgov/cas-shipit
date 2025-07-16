@@ -1,0 +1,17 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "cas-shipit.fullname" . }}-postgres-cluster-access
+  labels: {{ include "cas-shipit.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Values.database.releaseName }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              release: {{ include "cas-shipit.name" . }}
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: {{ include "cas-shipit.name" . }}
