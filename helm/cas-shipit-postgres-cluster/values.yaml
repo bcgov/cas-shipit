@@ -27,6 +27,7 @@ postgresCluster:
         - postgres
       password:
         type: AlphaNumeric
+      options: 'SUPERUSER'
 
 gcsBackups:
   enable: true
