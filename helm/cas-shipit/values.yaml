@@ -27,7 +27,7 @@ shipit:
   web:
     puma_workers: 4
 
-databaseCluster:
+database:
   releaseName: cas-shipit-db
   chartName: cas-postgres-cluster
   user: shipit
@@ -90,15 +90,15 @@ patroni-migration:
     tag: 17
 
   deployment:
-    name: cas-shipit
     sourceReleaseName: cas-shipit
+    name: cas-shipit-web
     targetReleaseName: cas-shipit-db
     originalReplicaCount: 3
 
   from:
     # Assuming all database information will be in the same secret
     # Pass either the secret's key or the specific value
-    secretName: cas-ggircs-patroni
+    secretName: cas-shipit-patroni
     hostSecretKey: ~
     host: cas-shipit-patroni.0fad32-tools.svc.cluster.local
     passwordSecretKey: password-superuser
