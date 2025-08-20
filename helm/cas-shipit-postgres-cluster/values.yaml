@@ -30,8 +30,6 @@ postgresCluster:
         - postgres
       password:
         type: AlphaNumeric
-      options: 'SUPERUSER'
-
 gcsBackups:
   enable: true
   # Needs to match the "namespace_apps" value in the terraform provisioning chart.
