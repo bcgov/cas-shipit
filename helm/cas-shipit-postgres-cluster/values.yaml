@@ -13,6 +13,9 @@ postgresCluster:
     requests:
       cpu: 100m
       memory: 256Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
 
   # The "users" value(s) is passed to the crunch postgres operator to create the database.
   # See http://access.crunchydata.com/documentation/postgres-operator/latest/tutorials/basic-setup/user-management
