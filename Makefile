@@ -31,7 +31,7 @@ install_pgo_cluster:
 	helm upgrade --install --atomic --timeout 3000s \
 		--namespace $(OC_PROJECT) \
 		--values ./helm/cas-shipit-postgres-cluster/values.yaml \
-		cas-shipit-db cas-postgres/cas-postgres;
+		cas-shipit-db cas-postgres/cas-postgres-cluster
 
 # TODO: Remove cas-postgres and add PG-Cluster deployment
 .PHONY: install
