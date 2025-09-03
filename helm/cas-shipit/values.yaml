@@ -32,23 +32,6 @@ database:
   chartName: cas-postgres-cluster
   user: shipit
 
-# TODO: Remove this once PGO is deployed
-cas-postgres:
-  patroni:
-    resources:
-      limits:
-        cpu: 250m
-        memory: 500Mi
-      requests:
-        cpu: 20m
-        memory: 400Mi
-    persistentVolume:
-      storageClass: netapp-block-standard
-      size: 4Gi
-    replicaCount: 3
-    env:
-      ALLOW_NOSSL: true
-
 redis:
   global:
     imagePullSecrets:
@@ -83,37 +66,3 @@ redis:
     # We are providing our own secret as the redis chart regenerates the password with every deploy
     existingSecret: cas-shipit-redis
     existingSecretPasswordKey: redis-password
-
-patroni-migration:
-  migrationJob:
-    image: postgres
-    tag: 17
-
-  deployment:
-    sourceReleaseName: cas-shipit
-    name: cas-shipit-web
-    targetReleaseName: cas-shipit-db
-    originalReplicaCount: 3
-
-  from:
-    # Assuming all database information will be in the same secret
-    # Pass either the secret's key or the specific value
-    secretName: cas-shipit-patroni
-    hostSecretKey: ~
-    host: cas-shipit-patroni.0fad32-tools.svc.cluster.local
-    passwordSecretKey: password-superuser
-    password: ~
-    portSecretKey: ~
-    port: 5432
-    userSecretKey: ~
-    user: postgres
-
-    # The name of the database to migrate
-    db: postgres
-
-  to:
-    # This is necessarily a PGO deployment
-    # superuser to migrate roles
-    superuserSecretName: cas-shipit-db-cas-postgres-cluster-pguser-postgres
-    # new owner of database to run own the migrated database
-    appuserSecretName: cas-shipit-db-cas-postgres-cluster-pguser-shipit

@@ -37,4 +37,4 @@ spec:
           activeDeadlineSeconds: 3600
   schedule: 0 */1 * * *
   successfulJobsHistoryLimit: 1
-  suspend: true
+  suspend: false
