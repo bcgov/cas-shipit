@@ -39,36 +39,35 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
-# Final stage for app image
-FROM base
+# Create and make runtime directories group-writable so the nonroot user can write to them.
+RUN mkdir -p db log storage tmp && \
+    chmod -R g+rwX /rails && \
+    chmod -R g+rwX /usr/local/bundle
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libsqlite3-0 nodejs libpq-dev jq git make gzip && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-RUN curl -L https://downloads-openshift-console.apps.silver.devops.gov.bc.ca/amd64/linux/oc.tar | tar x -C /bin
-RUN curl -L https://get.helm.sh/helm-v3.14.4-linux-amd64.tar.gz | tar xz -C /bin --strip-components 1
+# Install oc and helm to /usr/local/bin to be used by the nonroot user
+RUN curl -L https://downloads-openshift-console.apps.silver.devops.gov.bc.ca/amd64/linux/oc.tar | tar x -C /usr/local/bin
+RUN curl -L https://get.helm.sh/helm-v3.14.4-linux-amd64.tar.gz | tar xz -C /usr/local/bin --strip-components 1
+
+# Final stage for app image
+FROM dhi.io/ruby:$RUBY_VERSION
+
+WORKDIR /rails
+
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    HOME="/rails"
 
 
-# Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
-
-# Run and own only the runtime files as a non-root user for security
-# Default shipit setup not suitable for openshift
-# RUN useradd rails --create-home --shell /bin/bash && \
-#     chown -R rails:rails db log storage tmp 
-# USER rails:rails
-
-RUN useradd -r -u 1001 -g root nonroot
-RUN chown -R nonroot:0 /rails && \
-    chmod -R g=u /rails
-RUN chown -R nonroot:0 /usr/local/bundle && \
-    chmod -R g=u /usr/local/bundle
-
-USER nonroot
+COPY --from=build /usr/local/bin/oc /usr/local/bin/oc
+COPY --from=build /usr/local/bin/helm /usr/local/bin/helm
 
 # Helm needs to write a few directories in the HOME of the user
 ENV HOME="/rails"
