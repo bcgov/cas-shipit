@@ -58,19 +58,24 @@ FROM dhi.io/ruby:$RUBY_VERSION
 
 WORKDIR /rails
 
+# Helm needs to write a few directories in the HOME of the user
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     HOME="/rails"
 
-
+# Copy application from build stage
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
+
+# Copy packages needed for deployment
 COPY --from=build /usr/local/bin/oc /usr/local/bin/oc
 COPY --from=build /usr/local/bin/helm /usr/local/bin/helm
-
-# Helm needs to write a few directories in the HOME of the user
-ENV HOME="/rails"
+COPY --from=build /usr/lib /usr/lib
+COPY --from=build /usr/share/git-core /usr/share/git-core
+COPY --from=build /usr/bin/git* /usr/bin/
+COPY --from=build /usr/bin/jq /usr/bin/
+COPY --from=build /usr/bin/node /usr/bin/
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
