@@ -9,6 +9,9 @@ on:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -16,3 +19,5 @@ concurrency:
 jobs:
   build-image:
     uses: ./.github/workflows/build-image.yaml
+    permissions:
+      packages: write
